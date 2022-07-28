@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Game</title>
+        <link rel="icon" href="pac.png">
+    </head> 
+    <body>
+        <div id="container">
+            <h1>PacMan GAME</h1> 
+            <div id="stats">
+                <h2>Your Score: </h2><p id="sc"></p></br>
+                <h2>Best Score:</h2><p id="bsc"></p>
+            </div>
+            <div id="map">
+                <div id="egg"></div>
+                <img src="pac2.gif" id="snake">
+            </div>
+            <audio id="eat" src="eat.wav"></audio>  
+            <audio id="die" src="die.wav"></audio>
+            <audio id="player" src="Wii Theme - QuickSounds.com.mp3" loop></audio>
+            <button id="sbutt" onmouseover="sound()" onclick="hidemenu()">Sound Settings:</button>
+            <div id="soundmenu">
+                <button id="sbutt1" onclick="document.getElementById('player').play()">Music ON</button>
+                <button id="sbutt2" onclick="document.getElementById('player').pause()">Music OFF</button>
+                <button id="sbutt3" onclick="document.getElementById('player').volume+=0.1">Volume +</button>
+                <button id="sbutt4" onclick="document.getElementById('player').volume-=0.1">Volume -</button>
+            </div> 
+            <div id="lose">     
+                <h1>YOU LOST</h1>
+                <center>
+                <input class="butt" type="button" value="Play again" onclick="play()">
+                </center>
+    
+            </div>
+        <input class="butt" id="butt" type="button" value="Play" accesskey="p" onclick="play()">
+
+        </div>
+    </body>
+    <script>
+        var t=0;
+        var l=0;
+        var x=0;
+        var tg=0;
+        var lg=0;
+        var bx=0;
+        function gameplay(){
+            var a=Math.floor(Math.random()*100)*5
+            var b=Math.floor(Math.random()*100)*5
+            document.getElementById("egg").style.top=a+"px"
+            document.getElementById("egg").style.left=b+"px"
+            document.getElementById("egg").style.visibility="visible";
+            tg=a;
+            lg=b;
+           
+            
+        }
+        function play(){
+            t=0;
+            l=0;
+            document.getElementById("egg").style.transition="3s";
+            document.getElementById("snake").style.visibility="visible";
+            document.getElementById("snake").style.top=0;
+            document.getElementById("snake").style.left=0;
+            document.getElementById('sc').innerHTML=0;
+            document.getElementById('lose').style.display="none";
+            var a=Math.floor(Math.random()*100)*5
+            var b=Math.floor(Math.random()*100)*5
+            document.getElementById("egg").style.top=a+"px"
+            document.getElementById("egg").style.left=b+"px"
+            document.getElementById("egg").style.visibility="visible";
+            tg=a;
+            lg=b;
+        }
+        function count(){   
+            var c1=(tg-15==t)||(tg-20==t);
+            var c2=(lg-5==l);
+            if ((c1 &&(l==lg))||(c1 &&(l==lg-5))){
+                document.getElementById('eat').play();
+                x+=1;
+                document.getElementById('sc').innerHTML=x;
+                gameplay();
+            }else{
+                if((t>490 || t<-40) || (l>505 || l<-25)){
+                    lose()
+                }
+            }
+        }
+        
+        function moveLeft(){
+            document.getElementById("snake").style.transform = "rotate(180deg)";
+            l-=5;
+            document.getElementById("snake").style.left=l+"px";
+            count();
+        }
+        function moveRight(){
+            document.getElementById("snake").style.transform = "rotate(0deg)";
+            l+=5;
+            document.getElementById("snake").style.left=l+"px";
+            count();
+        }
+        function moveUp(){
+            document.getElementById("snake").style.transform = "rotate(-90deg)";
+            t-=5;
+            document.getElementById("snake").style.top=t+"px";
+            count();
+        }
+        function moveDown(){
+            document.getElementById("snake").style.transform = "rotate(90deg)";
+            t+=5;
+            document.getElementById("snake").style.top=t+"px";
+            count();
+        }
+        function lose(){
+            document.getElementById('die').play();
+            document.getElementById('lose').style.display="initial";
+            document.getElementById("egg").style.visibility="hidden";
+            document.getElementById("egg").style.transition="0s visibility";
+            document.getElementById("snake").style.visibility="hidden";
+
+            if(x>bx){
+                    bx=x;
+                    document.getElementById('bsc').innerHTML=bx;
+                    x=0;
+                }
+
+        }
+        function sound(){
+            document.getElementById('soundmenu').style.visibility='visible';
+        }
+        function hidemenu(){
+            document.getElementById('soundmenu').style.visibility='hidden';
+        }
+        window.addEventListener('keydown', function(event) {
+        switch (event.keyCode) {
+            case 37: // Left
+                moveLeft()
+                break;
+            case 38: // Up
+                moveUp();
+                break;
+            case 39: // Right
+                moveRight();
+                break;
+            case 40: // Down
+                moveDown();    
+                break;
+            }
+            }, false);
+    </script>
+    <style>
+        #map{
+            border: 2px solid black;
+            height: 500px;
+            width: 500px;
+            margin: 0px auto;
+            padding: 20px;
+            background-color: skyblue;
+        }
+        #snake{
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            padding: 0;
+            border-radius: 50%;
+            position: relative;
+            top:0px;
+            left:0px;
+            z-index: 99 !important;
+            transform: rotate(0deg);
+        }
+        h1{
+            display: inline-block;
+            color: rgb(88, 67, 146);
+            margin: 0;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        
+        #egg{
+            width: 15px;
+            height: 15px;
+            background: rgb(35, 69, 142);
+            border-radius: 50%;
+            position: relative;
+            visibility: hidden;
+            animation: anim 4s infinite;
+            transition: 3;
+            animation-delay: 4s;
+        }
+        @keyframes anim{
+            0%{
+                transform:scale(1);
+                background-color: orangered;
+                }
+            50%{
+                transform:scale(1.2);
+                background-color: palevioletred;
+                }
+            100%{
+                transform:scale(1);
+                
+                }
+        }
+        body{
+            background: url("bg.png");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+        #stats{
+            display: inline-block;
+            float: right;
+            margin: 0 80px 0 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        p,h2{
+            display: inline-block;
+            margin: 30px 0 0 0;
+            font-size: 20px;
+            }
+        p{
+            font-size: 30px;
+        }
+        #lose{
+            position: absolute;
+            top: 40%;
+            left:41%;
+            display: none;
+        }
+        #lose h1{
+            font-size: 50px;
+            color: red;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #container{
+            width: 1300px;
+            margin:0 auto;
+        }
+        .butt{
+            padding: 10px 20px 10px 20px;
+            background-color: rgb(115, 235, 139);
+            border: 1px solid ;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 22px;
+            width: 200px;
+            cursor: pointer;
+        }
+        .butt:hover{
+            background-color: rgb(35, 158, 78);
+        }
+        #sbutt1,#sbutt2,#sbutt3,#sbutt4,#sbutt{
+            position: absolute;
+            cursor: pointer;
+        }
+        #sbutt{
+           top: 20%;
+           left:7%; 
+           border: 0px;
+           border-radius: 3px;
+           background-color: rgb(213, 136, 213);
+           font-size: 18px;
+           font-family:monospace;
+           cursor: pointer;
+        }
+        #sbutt:hover{
+            background-color: rgb(235, 151, 235);
+        }
+        #sbutt1:hover,#sbutt2:hover,#sbutt3:hover,#sbutt4:hover{
+            background-color: rgb(148, 255, 169);
+        }
+        #sbutt1:focus,#sbutt2:focus,#sbutt3:focus,#sbutt4:focus,#sbutt:focus,#butt:focus{
+            outline:none;
+        }
+        #sbutt1{
+           top: 20%;
+           left:19%; 
+           border: 0px;
+           border-radius: 3px;
+           background-color: rgb(115, 235, 139);
+           font-size: 15px;
+           font-family:monospace;
+        }
+        #sbutt2{
+           top: 25%;
+           left:19%; 
+           border: 0px;
+           border-radius: 3px;
+           background-color: rgb(115, 235, 139);
+           font-size: 15px;
+           font-family:monospace;
+        }
+        #sbutt3{
+           top: 30%;
+           left:19%; 
+           border: 0px;
+           border-radius: 3px;
+           background-color: rgb(115, 235, 139);
+           font-size: 15px;
+           font-family:monospace;
+        }
+        #sbutt4{
+           top: 35%;
+           left:19%;
+           border: 0px;
+           border-radius: 3px;
+           background-color: rgb(115, 235, 139);
+           font-size: 15px;
+           font-family:monospace;
+        }
+        #soundmenu{
+            visibility: hidden;
+        }
+    </style> 
+</html>
